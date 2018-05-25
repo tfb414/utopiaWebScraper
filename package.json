@@ -1,0 +1,11 @@
+{
+  "name": "utopiaWebScraper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/tfb414/utopiaWebScraper",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "puppeteer": "^1.4.0"
+  }
+}
