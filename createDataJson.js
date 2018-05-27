@@ -2,11 +2,11 @@ fs = require('fs');
 const grabTotals = require("./grabTotals.js");
 
 async function main() {
-  // const data = await retreiveData();
-  // const formattedData = formatData(data, removeCommas);
+  const data = await retreiveData();
+  const formattedData = formatData(data, removeCommas);
 
   const fakeData = { "landAverage": "4444", "landTotal": "40999", "networthAverage": "293629gc", "networthTotal": "6753469gc", "honorTotal": "72621" }
-  readMasterDataAndAddNewData(fakeData);
+  readMasterDataAndAddNewData(formattedData);
   // writeFile(fakeData)
 }
 
