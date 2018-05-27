@@ -19,14 +19,18 @@ const NETWORTH_SELECTOR_ID = 1;
 
 async function main() {
 
-  const browser = await puppeteer.launch({ headless: false});
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
+  console.log('up nextL login');
   await login(page);
+  console.log('up next: navigate to kd page');
   await navigateToKingdomPage(page);
-  await kingdomTableRows(page);
+  // console.log('up next: grab kingdom table rows');
+  // await kingdomTableRows(page);
 
   await delay(5000);
+  console.log('up next: return totals');
   const landTotal = await grabTotal(page, LAND_SELECTOR_ID);
   const networthTotal = await grabTotal(page, NETWORTH_SELECTOR_ID);
   const honorTotal = await grabTotal(page, HONOR_SELECTOR_ID);
@@ -54,6 +58,7 @@ async function login(page) {
 
 async function navigateToKingdomPage(page) {
   console.log("inside navigateToKdPageFunction");
+  await delay(5000);
   page.goto(KINGDOM_URL);
   console.log("should be at kd page");
   await page.waitForSelector(KINGDOM_TABLE);
@@ -73,7 +78,7 @@ async function kingdomTableRows(page) {
 }
 
 async function grabTotal(page, id) {
-//id is passed into the evalate function as selectorId
+  //id is passed into the evalate function as selectorId
   return await page.evaluate((selectorId) => {
     return document.querySelectorAll(".two-column-stats > tbody > tr")[selectorId]
       .childNodes[3].textContent;
@@ -81,7 +86,7 @@ async function grabTotal(page, id) {
 }
 
 async function delay(time) {
-  return new Promise(function(resolve) {
+  return new Promise(function (resolve) {
     setTimeout(resolve, time);
   });
 }

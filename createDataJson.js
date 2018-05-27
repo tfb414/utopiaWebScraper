@@ -2,21 +2,21 @@ fs = require('fs');
 const grabTotals = require("./grabTotals.js");
 
 async function main() {
-  const data = await retreiveData();
-  const formattedData = formatData(data, removeCommas);
+  // const data = await retreiveData();
+  // const formattedData = formatData(data, removeCommas);
 
-  // const fakeData = { "landAverage": "3333", "landTotal": "40999", "networthAverage": "293629gc", "networthTotal": "6753469gc", "honorTotal": "72621" }
-  readMasterDataAndAddNewData(formattedData);
-  // writeFile(formattedData)
+  const fakeData = { "landAverage": "4444", "landTotal": "40999", "networthAverage": "293629gc", "networthTotal": "6753469gc", "honorTotal": "72621" }
+  readMasterDataAndAddNewData(fakeData);
+  // writeFile(fakeData)
 }
 
 async function retreiveData() {
-  // return await grabTotals.main();
-  return {
-    landTotal: '22,222 acres (avg: 1,748 acres)',
-    networthTotal: '6,753,469gc (avg: 293,629gc)',
-    honorTotal: '72,621'
-  }
+  return await grabTotals.main();
+  // return {
+  //   landTotal: '22,222 acres (avg: 1,748 acres)',
+  //   networthTotal: '6,753,469gc (avg: 293,629gc)',
+  //   honorTotal: '72,621'
+  // }
 }
 
 function formatData(data, fn) {
@@ -58,8 +58,13 @@ async function readMasterDataAndAddNewData(newData) {
     if (err) {
       return console.log(err);
     }
-    let updatedMasterData = addNewDataToSavedData(newData, masterData);
-    writeFile(updatedMasterData);
+    parsedMasterData = JSON.parse(masterData);
+
+    let updatedMasterData = addNewDataToSavedData(newData, parsedMasterData['age']);
+    // console.log(updatedMasterData)
+    parsedMasterData['age'] = updatedMasterData;
+    console.log(parsedMasterData);
+    writeFile(parsedMasterData);
   });
 }
 
@@ -71,7 +76,9 @@ function writeFile(data) {
 }
 
 function addNewDataToSavedData(newData, masterData) {
-  let updatedMasterData = JSON.parse(masterData);
+  console.log(masterData)
+  // console.log(masterData)
+  let updatedMasterData = masterData
 
   for (key in updatedMasterData) {
     const oldValue = updatedMasterData[key]
