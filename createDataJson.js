@@ -46,7 +46,7 @@ function removeCommas(string) {
 }
 
 function selectNumbers(string) {
-  const regExp = /([1-9])\w+/g;
+  const regExp = /\d+/g;
   return string.match(regExp);
 }
 

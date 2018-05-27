@@ -29,7 +29,7 @@ async function main() {
   // console.log('up next: grab kingdom table rows');
   // await kingdomTableRows(page);
 
-  await delay(5000);
+  await delay(10000);
   console.log('up next: return totals');
   const landTotal = await grabTotal(page, LAND_SELECTOR_ID);
   const networthTotal = await grabTotal(page, NETWORTH_SELECTOR_ID);
@@ -48,7 +48,7 @@ async function main() {
 
 async function login(page) {
   await page.goto(BASE_URL);
-  await delay(5000)
+  await delay(10000)
   page.click(LOGIN_BOX);
   await page.keyboard.type(USERNAME);
   await page.click(PASSWORD_BOX);
@@ -58,14 +58,14 @@ async function login(page) {
 
 async function navigateToKingdomPage(page) {
   console.log("inside navigateToKdPageFunction");
-  await delay(5000);
+  await delay(10000);
   page.goto(KINGDOM_URL);
   console.log("should be at kd page");
   await page.waitForSelector(KINGDOM_TABLE);
 }
 
 async function kingdomTableRows(page) {
-  await delay(5000);
+  await delay(10000);
   let table = [];
   for (let i = 0; i < KINGDOM_SIZE; i++) {
     let row = await page.evaluate((i) => {
