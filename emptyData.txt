@@ -1,1 +1,1 @@
-{"age":{"landAverage":[],"landTotal":[],"networthAverage":[],"networthTotal":[],"honorTotal":[]}}
+{"age":{"landAverage":[],"landTotal":[],"networthAverage":[],"networthTotal":[],"honorTotal":[], "currentDate":[]}}
