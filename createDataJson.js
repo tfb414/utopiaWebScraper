@@ -5,7 +5,7 @@ async function main() {
   const data = await retreiveData();
   const formattedData = formatData(data, removeCommas);
 
-  const fakeData = { "landAverage": "4444", "landTotal": "40999", "networthAverage": "293629gc", "networthTotal": "6753469gc", "honorTotal": "72621" }
+  // const fakeData = { "landAverage": "4444", "landTotal": "40999", "networthAverage": "293629gc", "networthTotal": "6753469gc", "honorTotal": "72621" }
   readMasterDataAndAddNewData(formattedData);
   // writeFile(fakeData)
 }
@@ -26,6 +26,7 @@ function formatData(data, fn) {
   const landTotalNumbers = selectNumbers(removeCommas(landTotalString));
   const landAverage = landTotalNumbers[1];
   const landTotal = landTotalNumbers[0];
+  const currentDate = data['currentDate']
 
   const networthTotalString = data['networthTotal'];
   const networthTotalNumbers = selectNumbers(removeCommas(networthTotalString));
@@ -37,7 +38,7 @@ function formatData(data, fn) {
   formattedData['networthAverage'] = networthAverage;
   formattedData['networthTotal'] = networthTotal;
   formattedData['honorTotal'] = removeCommas(data['honorTotal']);
-
+  formattedData['currentDate'] = currentDate;
   return formattedData;
 }
 
@@ -61,7 +62,6 @@ async function readMasterDataAndAddNewData(newData) {
     parsedMasterData = JSON.parse(masterData);
 
     let updatedMasterData = addNewDataToSavedData(newData, parsedMasterData['age']);
-    // console.log(updatedMasterData)
     parsedMasterData['age'] = updatedMasterData;
     console.log(parsedMasterData);
     writeFile(parsedMasterData);

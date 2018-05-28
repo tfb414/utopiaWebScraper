@@ -18,37 +18,39 @@ const LAND_SELECTOR_ID = 2;
 const NETWORTH_SELECTOR_ID = 1;
 
 async function main() {
-
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
-  console.log('up nextL login');
+  console.log("up nextL login");
   await login(page);
-  console.log('up next: navigate to kd page');
+  console.log("up next: navigate to kd page");
   await navigateToKingdomPage(page);
   // console.log('up next: grab kingdom table rows');
   // await kingdomTableRows(page);
 
   await delay(10000);
-  console.log('up next: return totals');
+  console.log("up next: return totals");
   const landTotal = await grabTotal(page, LAND_SELECTOR_ID);
   const networthTotal = await grabTotal(page, NETWORTH_SELECTOR_ID);
   const honorTotal = await grabTotal(page, HONOR_SELECTOR_ID);
+  const currentDate = await grabDate(page);
 
   await console.log("Land Total: ", landTotal);
   await console.log("Networth Total: ", networthTotal);
   await console.log("Honor Total: ", honorTotal);
+  await console.log("Current Date: ", currentDate);
 
   return {
     landTotal,
     networthTotal,
-    honorTotal
-  }
+    honorTotal,
+    currentDate
+  };
 }
 
 async function login(page) {
   await page.goto(BASE_URL);
-  await delay(10000)
+  await delay(10000);
   page.click(LOGIN_BOX);
   await page.keyboard.type(USERNAME);
   await page.click(PASSWORD_BOX);
@@ -80,13 +82,20 @@ async function kingdomTableRows(page) {
 async function grabTotal(page, id) {
   //id is passed into the evalate function as selectorId
   return await page.evaluate((selectorId) => {
-    return document.querySelectorAll(".two-column-stats > tbody > tr")[selectorId]
-      .childNodes[3].textContent;
+    return document.querySelectorAll(".two-column-stats > tbody > tr")[
+      selectorId
+    ].childNodes[3].textContent;
   }, id);
 }
 
+async function grabDate(page) {
+  return await page.evaluate(() => {
+    return document.querySelector(".current-date").innerHTML;
+  });
+}
+
 async function delay(time) {
-  return new Promise(function (resolve) {
+  return new Promise(function(resolve) {
     setTimeout(resolve, time);
   });
 }
@@ -95,4 +104,4 @@ async function delay(time) {
 
 module.exports = {
   main
-}
+};
