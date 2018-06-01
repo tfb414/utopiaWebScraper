@@ -13,23 +13,25 @@ const KINGDOM_TABLE = ".tablesorter";
 const KINGDOM_URL = "http://utopia-game.com/wol/game/kingdom_details";
 const KINGDOM_SIZE = 25;
 
+const KINGDOM_NUMBER_BOX_ID = "#id_kingdom";
+const KINGDOM_ISLAND_BOX_ID = "#id_island";
+const CHANGE_KINGDOM_BUTTON = "#change-kingdom-button";
+
 const HONOR_SELECTOR_ID = 3;
 const LAND_SELECTOR_ID = 2;
 const NETWORTH_SELECTOR_ID = 1;
 
 async function main() {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
   console.log("up nextL login");
   await login(page);
   console.log("up next: navigate to kd page");
   await navigateToKingdomPage(page);
-  // console.log('up next: grab kingdom table rows');
-  // await kingdomTableRows(page);
 
   await delay(10000);
-  console.log("up next: return totals");
+  console.log("up next: return local totals");
   const landTotal = await grabTotal(page, LAND_SELECTOR_ID);
   const networthTotal = await grabTotal(page, NETWORTH_SELECTOR_ID);
   const honorTotal = await grabTotal(page, HONOR_SELECTOR_ID);
@@ -38,13 +40,30 @@ async function main() {
   await console.log("Land Total: ", landTotal);
   await console.log("Networth Total: ", networthTotal);
   await console.log("Honor Total: ", honorTotal);
+
+  console.log("Up next: return enemy totals");
+
+  await delay(10000);
+  await navigateTo(page, 6, 9);
+  await delay(10000);
+  const enemyLandTotal = await grabTotal(page, LAND_SELECTOR_ID);
+  const enemyNetworthTotal = await grabTotal(page, NETWORTH_SELECTOR_ID);
+  const enemyHonorTotal = await grabTotal(page, HONOR_SELECTOR_ID);
+
+  await console.log("Enemy Land Total: ", enemyLandTotal);
+  await console.log("Enemy Networth Total: ", enemyNetworthTotal);
+  await console.log("Enemy Honor Total: ", enemyHonorTotal);
+
   await console.log("Current Date: ", currentDate);
 
   return {
     landTotal,
     networthTotal,
     honorTotal,
-    currentDate
+    currentDate,
+    enemyLandTotal,
+    enemyNetworthTotal,
+    enemyHonorTotal,
   };
 }
 
@@ -66,6 +85,16 @@ async function navigateToKingdomPage(page) {
   await page.waitForSelector(KINGDOM_TABLE);
 }
 
+async function navigateTo(page, kingdomNumber, islandNumber) {
+  console.log('inside')
+  await delay(10000);
+  await page.evaluate(() => {
+    document.querySelector('#id_kingdom').value = 6
+    document.querySelector('#id_island').value = 9
+  })
+  await page.click(CHANGE_KINGDOM_BUTTON)
+}
+
 async function kingdomTableRows(page) {
   await delay(10000);
   let table = [];
@@ -84,7 +113,7 @@ async function grabTotal(page, id) {
   return await page.evaluate((selectorId) => {
     return document.querySelectorAll(".two-column-stats > tbody > tr")[
       selectorId
-    ].childNodes[3].textContent;
+    ].childNodes[3].innerHTML;
   }, id);
 }
 

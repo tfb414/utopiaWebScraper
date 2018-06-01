@@ -3,7 +3,9 @@ const grabTotals = require("./grabTotals.js");
 
 async function main() {
   const data = await retreiveData();
+  console.log(data);
   const formattedData = formatData(data, removeCommas);
+  console.log("formatted data::::: \n", formattedData);
 
   // const fakeData = { "landAverage": "4444", "landTotal": "40999", "networthAverage": "293629gc", "networthTotal": "6753469gc", "honorTotal": "72621" }
   readMasterDataAndAddNewData(formattedData);
@@ -12,15 +14,13 @@ async function main() {
 
 async function retreiveData() {
   return await grabTotals.main();
-  // return {
-  //   landTotal: '22,222 acres (avg: 1,748 acres)',
-  //   networthTotal: '6,753,469gc (avg: 293,629gc)',
-  //   honorTotal: '72,621'
-  // }
+  
 }
 
 function formatData(data, fn) {
   const formattedData = {};
+
+  
 
   const landTotalString = data['landTotal'];
   const landTotalNumbers = selectNumbers(removeCommas(landTotalString));
