@@ -22,49 +22,38 @@ const LAND_SELECTOR_ID = 2;
 const NETWORTH_SELECTOR_ID = 1;
 
 async function main() {
+  let grabbedData = {
+    ourKd: {},
+    enemyKd: {},
+  };
+
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  console.log("up nextL login");
+  console.log("up next: login");
   await login(page);
   console.log("up next: navigate to kd page");
   await navigateToKingdomPage(page);
 
   await delay(10000);
   console.log("up next: return local totals");
-  const landTotal = await grabTotal(page, LAND_SELECTOR_ID);
-  const networthTotal = await grabTotal(page, NETWORTH_SELECTOR_ID);
-  const honorTotal = await grabTotal(page, HONOR_SELECTOR_ID);
+  grabbedData.ourKd["landTotal"] = await grabTotal(page, LAND_SELECTOR_ID);
+  grabbedData.ourKd["networthTotal"] = await grabTotal(page, NETWORTH_SELECTOR_ID);
+  grabbedData.ourKd["honorTotal"] = await grabTotal(page, HONOR_SELECTOR_ID);
+  // grabbedData["currentDate"] = 
   const currentDate = await grabDate(page);
 
-  await console.log("Land Total: ", landTotal);
-  await console.log("Networth Total: ", networthTotal);
-  await console.log("Honor Total: ", honorTotal);
-
-  console.log("Up next: return enemy totals");
-
-  await delay(10000);
   await navigateTo(page, 6, 9);
   await delay(10000);
-  const enemyLandTotal = await grabTotal(page, LAND_SELECTOR_ID);
-  const enemyNetworthTotal = await grabTotal(page, NETWORTH_SELECTOR_ID);
-  const enemyHonorTotal = await grabTotal(page, HONOR_SELECTOR_ID);
+  grabbedData.enemyKd["landTotal"] = await grabTotal(page, LAND_SELECTOR_ID);
+  grabbedData.enemyKd["networthTotal"] = await grabTotal(page, NETWORTH_SELECTOR_ID);
+  grabbedData.enemyKd["honorTotal"] = await grabTotal(page, HONOR_SELECTOR_ID);
 
-  await console.log("Enemy Land Total: ", enemyLandTotal);
-  await console.log("Enemy Networth Total: ", enemyNetworthTotal);
-  await console.log("Enemy Honor Total: ", enemyHonorTotal);
-
-  await console.log("Current Date: ", currentDate);
+  // console.log('grabbed Data', grabbedData);
 
   return {
-    landTotal,
-    networthTotal,
-    honorTotal,
-    currentDate,
-    enemyLandTotal,
-    enemyNetworthTotal,
-    enemyHonorTotal,
-  };
+    [currentDate]: grabbedData
+  }
 }
 
 async function login(page) {
