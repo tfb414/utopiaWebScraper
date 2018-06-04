@@ -35,12 +35,14 @@ async function main() {
   console.log("up next: navigate to kd page");
   await navigateToKingdomPage(page);
 
-  await delay(10000);
+  
+  const ourKdProvinces = await kingdomTableRows(page);
   console.log("up next: return local totals");
   grabbedData.ourKd["landTotal"] = await grabTotal(page, LAND_SELECTOR_ID);
   grabbedData.ourKd["networthTotal"] = await grabTotal(page, NETWORTH_SELECTOR_ID);
   grabbedData.ourKd["honorTotal"] = await grabTotal(page, HONOR_SELECTOR_ID);
-  // grabbedData["currentDate"] = 
+  grabbedData.ourKd.provinces = ourKdProvinces;
+  
   const currentDate = await grabDate(page);
 
   await navigateTo(page, 6, 9);
@@ -48,8 +50,8 @@ async function main() {
   grabbedData.enemyKd["landTotal"] = await grabTotal(page, LAND_SELECTOR_ID);
   grabbedData.enemyKd["networthTotal"] = await grabTotal(page, NETWORTH_SELECTOR_ID);
   grabbedData.enemyKd["honorTotal"] = await grabTotal(page, HONOR_SELECTOR_ID);
-
-  // console.log('grabbed Data', grabbedData);
+  const enemyKdProvinces = await kingdomTableRows(page);
+  grabbedData.enemyKd.provinces = enemyKdProvinces;
 
   return {
     [currentDate]: grabbedData
@@ -85,16 +87,48 @@ async function navigateTo(page, kingdomNumber, islandNumber) {
 }
 
 async function kingdomTableRows(page) {
+  console.log('inside the big one')
   await delay(10000);
-  let table = [];
+  let provinces = {};
+ 
   for (let i = 0; i < KINGDOM_SIZE; i++) {
+    
     let row = await page.evaluate((i) => {
-      return document.querySelectorAll(".tablesorter > tbody > tr")[i]
-        .innerHTML;
+
+      let province = {
+        acres: "",
+        networth: "",
+        networthPerAcre: "",
+        race: "",
+        honor: "",
+        name: ""
+      }
+    
+      let provinceProp = document.querySelectorAll(".tablesorter > tbody > tr")[i].childNodes;
+
+      province.acres = provinceProp[7].innerHTML;
+      province.networth = provinceProp[9].innerHTML;
+      province.networthPerAcre = provinceProp[11].innerHTML
+      province.race = provinceProp[5].innerHTML;
+      province.honor = provinceProp[13].innerHTML;
+      province.name = provinceProp[3].innerText
+    
+      return province;
     }, i);
-    table.push(row);
+
+    provinces[row.name] = row;
   }
-  return table;
+  // console.log(provinces);
+  return provinces;
+}
+
+async function kingdomProvinceData(page) {
+  await delay(10000);
+  await page.evaluate(()=> {
+    document.querySelectorAll(".tablesorter > tbody > tr").forEach((element, i)=> {
+      console.log(element.childNodes[5].innerHTML);
+    })
+  })
 }
 
 async function grabTotal(page, id) {
@@ -117,6 +151,8 @@ async function delay(time) {
     setTimeout(resolve, time);
   });
 }
+
+
 
 // main();
 
