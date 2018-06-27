@@ -1,1 +1,24 @@
-{"age":{"landAverage":[],"landTotal":[],"networthAverage":[],"networthTotal":[],"honorTotal":[], "currentDate":[]}}
+{
+    [currentDate]: {
+      ourKd: {
+        totals:{
+          landTotal: {},
+          landAverage: {},
+          networthTotal: {},
+          networthAverage: {},
+          honorTotal: {}
+        },
+        provinces: {}
+      },
+      enemyKd: {
+        totals: {
+          landTotal: {},
+          landAverage: {},
+          networthTotal: {},
+          networthAverage: {},
+          honorTotal: {}
+        },
+        provinces: {}
+      }
+    }
+  }

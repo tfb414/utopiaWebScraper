@@ -21,10 +21,15 @@ const HONOR_SELECTOR_ID = 3;
 const LAND_SELECTOR_ID = 2;
 const NETWORTH_SELECTOR_ID = 1;
 
+const getEnemyKdData = false;
+
 async function main() {
   let grabbedData = {
     ourKd: {},
     enemyKd: {},
+    featureToggles: {
+      getEnemyKdData: false
+    }
   };
 
   const browser = await puppeteer.launch({ headless: false });
@@ -45,6 +50,7 @@ async function main() {
   
   const currentDate = await grabDate(page);
 
+  if(getEnemyKdData){
   await navigateTo(page, 6, 9);
   await delay(10000);
   grabbedData.enemyKd["landTotal"] = await grabTotal(page, LAND_SELECTOR_ID);
@@ -52,6 +58,7 @@ async function main() {
   grabbedData.enemyKd["honorTotal"] = await grabTotal(page, HONOR_SELECTOR_ID);
   const enemyKdProvinces = await kingdomTableRows(page);
   grabbedData.enemyKd.provinces = enemyKdProvinces;
+  }
 
   return {
     [currentDate]: grabbedData

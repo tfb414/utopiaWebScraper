@@ -27,16 +27,46 @@ async function retreiveData() {
 
 
 function formatData(data) {
+  // const emptyData = {
+  //   [currentDate]: {
+  //     ourKd: {
+  //       totals:{
+  //         landTotal: {},
+  //         landAverage: {},
+  //         networthTotal: {},
+  //         networthAverage: {},
+  //         honorTotal: {}
+  //       },
+  //       provinces: {}
+  //     },
+  //     enemyKd: {
+  //       totals: {
+  //         landTotal: {},
+  //         landAverage: {},
+  //         networthTotal: {},
+  //         networthAverage: {},
+  //         honorTotal: {}
+  //       },
+  //       provinces: {}
+  //     }
+      
+  //   }
+  // }
+
   const currentDate = Object.keys(data)[0];
 
   const ourKdWithLandAverages = splitTotalsAndAverageFromTotals(data[currentDate].ourKd.landTotal);
   const ourKdWithNetworthAverages = splitTotalsAndAverageFromTotals(data[currentDate].ourKd.networthTotal);
-  const enemyKdIncludingLandAverages = splitTotalsAndAverageFromTotals(data[currentDate].enemyKd.landTotal);
-  const enemyKdIncludingNetworthAverages = splitTotalsAndAverageFromTotals(data[currentDate].enemyKd.networthTotal);
   const ourKdHonor = removeCommas(data[currentDate].ourKd.honorTotal);
+  
+  const ourKdProvinces = loopThroughProvinces(data[currentDate].ourKd.provinces);
+
+  if (data.featureToggles.getEnemyKdData){
   const enemyKdHonor = removeCommas(data[currentDate].enemyKd.honorTotal);
   const enemyKdProvinces = loopThroughProvinces(data[currentDate].enemyKd.provinces);
-  const ourKdProvinces = loopThroughProvinces(data[currentDate].ourKd.provinces);
+  const enemyKdIncludingLandAverages = splitTotalsAndAverageFromTotals(data[currentDate].enemyKd.landTotal);
+  const enemyKdIncludingNetworthAverages = splitTotalsAndAverageFromTotals(data[currentDate].enemyKd.networthTotal);
+  }
 
   const cleanedData = {
     [currentDate]: {
@@ -47,20 +77,20 @@ function formatData(data) {
           networthTotal: ourKdWithNetworthAverages[0],
           networthAverage: ourKdWithNetworthAverages[1],
           honorTotal: ourKdHonor,
-          war: true,
+          war: false,
         },
         provinces: ourKdProvinces
-      },
-      enemyKd: {
-        totals: {
-          landTotal: enemyKdIncludingLandAverages[0],
-          landAverage: enemyKdIncludingLandAverages[1],
-          networthTotal: enemyKdIncludingNetworthAverages[0],
-          networthAverage: enemyKdIncludingNetworthAverages[1],
-          honorTotal: enemyKdHonor
-        },
-        provinces: enemyKdProvinces
       }
+      // enemyKd: {
+      //   totals: {
+      //     landTotal: enemyKdIncludingLandAverages[0],
+      //     landAverage: enemyKdIncludingLandAverages[1],
+      //     networthTotal: enemyKdIncludingNetworthAverages[0],
+      //     networthAverage: enemyKdIncludingNetworthAverages[1],
+      //     honorTotal: enemyKdHonor
+      //   },
+      //   provinces: enemyKdProvinces
+      // }
     }
   }
 
