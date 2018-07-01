@@ -22,13 +22,14 @@ const LAND_SELECTOR_ID = 2;
 const NETWORTH_SELECTOR_ID = 1;
 
 const getEnemyKdData = false;
+//To do - if the war div is viewable set this to true and set the enemy kd and island above
 
 async function main() {
   let grabbedData = {
     ourKd: {},
     enemyKd: {},
     featureToggles: {
-      getEnemyKdData: false
+      getEnemyKdData
     }
   };
 
@@ -40,28 +41,28 @@ async function main() {
   console.log("up next: navigate to kd page");
   await navigateToKingdomPage(page);
 
-  
+
   const ourKdProvinces = await kingdomTableRows(page);
   console.log("up next: return local totals");
   grabbedData.ourKd["landTotal"] = await grabTotal(page, LAND_SELECTOR_ID);
   grabbedData.ourKd["networthTotal"] = await grabTotal(page, NETWORTH_SELECTOR_ID);
   grabbedData.ourKd["honorTotal"] = await grabTotal(page, HONOR_SELECTOR_ID);
   grabbedData.ourKd.provinces = ourKdProvinces;
-  
+
   const currentDate = await grabDate(page);
 
-  if(getEnemyKdData){
-  await navigateTo(page, 6, 9);
-  await delay(10000);
-  grabbedData.enemyKd["landTotal"] = await grabTotal(page, LAND_SELECTOR_ID);
-  grabbedData.enemyKd["networthTotal"] = await grabTotal(page, NETWORTH_SELECTOR_ID);
-  grabbedData.enemyKd["honorTotal"] = await grabTotal(page, HONOR_SELECTOR_ID);
-  const enemyKdProvinces = await kingdomTableRows(page);
-  grabbedData.enemyKd.provinces = enemyKdProvinces;
+  if (getEnemyKdData) {
+    await navigateTo(page, 6, 9);
+    await delay(10000);
+    grabbedData.enemyKd["landTotal"] = await grabTotal(page, LAND_SELECTOR_ID);
+    grabbedData.enemyKd["networthTotal"] = await grabTotal(page, NETWORTH_SELECTOR_ID);
+    grabbedData.enemyKd["honorTotal"] = await grabTotal(page, HONOR_SELECTOR_ID);
+    const enemyKdProvinces = await kingdomTableRows(page);
+    grabbedData.enemyKd.provinces = enemyKdProvinces;
   }
 
   return {
-    [currentDate]: grabbedData
+    [currentDate]: grabbedData,
   }
 }
 
@@ -97,9 +98,9 @@ async function kingdomTableRows(page) {
   console.log('inside the big one')
   await delay(10000);
   let provinces = {};
- 
+
   for (let i = 0; i < KINGDOM_SIZE; i++) {
-    
+
     let row = await page.evaluate((i) => {
 
       let province = {
@@ -110,7 +111,7 @@ async function kingdomTableRows(page) {
         honor: "",
         name: ""
       }
-    
+
       let provinceProp = document.querySelectorAll(".tablesorter > tbody > tr")[i].childNodes;
 
       province.acres = provinceProp[7].innerHTML;
@@ -119,7 +120,7 @@ async function kingdomTableRows(page) {
       province.race = provinceProp[5].innerHTML;
       province.honor = provinceProp[13].innerHTML;
       province.name = provinceProp[3].innerText
-    
+
       return province;
     }, i);
 
@@ -131,8 +132,8 @@ async function kingdomTableRows(page) {
 
 async function kingdomProvinceData(page) {
   await delay(10000);
-  await page.evaluate(()=> {
-    document.querySelectorAll(".tablesorter > tbody > tr").forEach((element, i)=> {
+  await page.evaluate(() => {
+    document.querySelectorAll(".tablesorter > tbody > tr").forEach((element, i) => {
       console.log(element.childNodes[5].innerHTML);
     })
   })
@@ -154,7 +155,7 @@ async function grabDate(page) {
 }
 
 async function delay(time) {
-  return new Promise(function(resolve) {
+  return new Promise(function (resolve) {
     setTimeout(resolve, time);
   });
 }
